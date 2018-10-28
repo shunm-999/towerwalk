@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <integer-array name="tower_id_list">
+        <item>@drawable/tower1</item>
+        <item>@drawable/tower2</item>
+        <item>@drawable/tower3</item>
+        <item>@drawable/tower4</item>
+        <item>@drawable/tower5</item>
+    </integer-array>
+</resources>

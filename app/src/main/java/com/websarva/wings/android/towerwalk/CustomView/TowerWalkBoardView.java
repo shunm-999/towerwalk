@@ -6,6 +6,8 @@ import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Paint;
+import android.os.Looper;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.SurfaceHolder;
@@ -17,18 +19,26 @@ import com.websarva.wings.android.towerwalk.Algorithm.ReductionAndConquerAlgorit
 import com.websarva.wings.android.towerwalk.Callback.OnClickCallback;
 import com.websarva.wings.android.towerwalk.Const.GameConst;
 import com.websarva.wings.android.towerwalk.Const.KeyMapConst;
+import com.websarva.wings.android.towerwalk.Controller.Controller;
+import com.websarva.wings.android.towerwalk.Controller.GameController;
 import com.websarva.wings.android.towerwalk.Item.CharacterIcon;
 import com.websarva.wings.android.towerwalk.R;
 import com.websarva.wings.android.towerwalk.Util.BitmapResizer;
+import com.websarva.wings.android.towerwalk.Util.ConvertUtil;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import android.os.Handler;
+import android.widget.TextView;
+
 public class TowerWalkBoardView extends SurfaceView implements SurfaceHolder.Callback {
 
     // TAG
     private static final String TAG = TowerWalkBoardView.class.getSimpleName();
+    // 文字の大きさ
+    private static final int TEXT_SIZE = 50;
 
     // ゲームの勝敗
     public enum GameStatus {
@@ -39,6 +49,9 @@ public class TowerWalkBoardView extends SurfaceView implements SurfaceHolder.Cal
         ERROR
     }
 
+    // ゲームの制御コントローラー
+    private Controller mGameController = new GameController();
+
     // 全体の幅
     private int mWidth;
     // 全体の高さ
@@ -46,7 +59,6 @@ public class TowerWalkBoardView extends SurfaceView implements SurfaceHolder.Cal
 
     // 一辺のボックス数
     private int mSquareNumber;
-
     // 盤面の状態を保持するリスト（行・列）
     private int[][] mBoardTowerList;
 
@@ -64,14 +76,10 @@ public class TowerWalkBoardView extends SurfaceView implements SurfaceHolder.Cal
     // 対戦相手用のクラス
     private CharacterIcon mOpponent;
 
-    // ホルダー
-    private SurfaceHolder mHolder;
-    // キャンバス
-    private Canvas mCanvas = null;
     // ボタンの押下の不可を判定するフラグ
     private boolean mClickFrag = true;
 
-    public TowerWalkBoardView(Context context, int squareNumber, ImageView... imageViews) {
+    public TowerWalkBoardView(Context context, int squareNumber, final TextView resultText, ImageView... imageViews) {
         super(context);
         // 盤面リストの生成
         mSquareNumber = squareNumber;
@@ -81,7 +89,20 @@ public class TowerWalkBoardView extends SurfaceView implements SurfaceHolder.Cal
         OnClickListener clickListener = new OnClickListener(new OnClickCallback() {
             @Override
             public void onCall(GameStatus gameStatus) {
-
+                switch (gameStatus) {
+                    case WIN:
+                        showGameResult(getResources().getString(R.string.tower_walk_board_view_game_result_win), resultText);
+                        break;
+                    case DRAW:
+                        showGameResult(getResources().getString(R.string.tower_walk_board_view_game_result_draw), resultText);
+                        break;
+                    case LOSE:
+                        showGameResult(getResources().getString(R.string.tower_walk_board_view_game_result_lose), resultText);
+                        break;
+                    case ERROR:
+                        showGameResult(getResources().getString(R.string.tower_walk_board_view_game_result_error), resultText);
+                        break;
+                }
             }
         }, imageViews);
 
@@ -90,8 +111,8 @@ public class TowerWalkBoardView extends SurfaceView implements SurfaceHolder.Cal
             imageView.setOnClickListener(clickListener);
         }
 
-        mHolder = getHolder();
-        mHolder.addCallback(this);
+        SurfaceHolder holder = getHolder();
+        holder.addCallback(this);
     }
 
     @Override
@@ -186,14 +207,17 @@ public class TowerWalkBoardView extends SurfaceView implements SurfaceHolder.Cal
      * ボタンが押下されたことを通知する
      */
     private GameStatus notifyChanged(KeyMapConst.KeyMap keyMap) {
-        GameStatus currentGameStatus = GameStatus.PLAYING;
+
+        // ゲームの進行状況を表す変数
+        GameStatus currentGameStatus;
         int[] playerDistance = keyMap.getDistance();
         if (!movePlayerIcon(mPlayer, playerDistance)) {
             return GameStatus.ERROR;
         }
         drawGameBoard();
 
-        currentGameStatus = judgeGame();
+        // ゲームの進行状況を判定する
+        currentGameStatus = mGameController.judgeGame(mPlayer, mOpponent, mBoardTowerList);
         if (currentGameStatus != GameStatus.PLAYING) return currentGameStatus;
 
         int[] opponentDistance = new ReductionAndConquerAlgorithm().decideNextPosition(mBoardTowerList, mOpponent, mPlayer);
@@ -202,49 +226,11 @@ public class TowerWalkBoardView extends SurfaceView implements SurfaceHolder.Cal
         }
         drawGameBoard();
 
-        currentGameStatus = judgeGame();
+        // ゲームの進行状況を判定する
+        currentGameStatus = mGameController.judgeGame(mPlayer, mOpponent, mBoardTowerList);
         if (currentGameStatus != GameStatus.PLAYING) return currentGameStatus;
 
-        mClickFrag = true;
-
         return currentGameStatus;
-    }
-
-    /**
-     * ゲームの勝敗を判定する
-     */
-    private GameStatus judgeGame() {
-
-        boolean playerCanMove = false;
-        boolean opponentCanMove = false;
-
-        for (KeyMapConst.KeyMap keyMap : KeyMapConst.KeyMap.values()) {
-            int[] playerPosition = new int[]{mPlayer.getCurrentPosition()[0] + keyMap.getDistance()[0], mPlayer.getCurrentPosition()[1] + keyMap.getDistance()[1]};
-            int playerCurrentPositionHigh = mBoardTowerList[mPlayer.getCurrentPosition()[0]][mPlayer.getCurrentPosition()[1]];
-            int playerPositionHigh = mBoardTowerList[playerPosition[0]][playerPosition[1]];
-
-            int[] opponentPosition = new int[]{mOpponent.getCurrentPosition()[0] + keyMap.getDistance()[0], mOpponent.getCurrentPosition()[1] + keyMap.getDistance()[1]};
-            int opponentCurrentPositionHigh = mBoardTowerList[mOpponent.getCurrentPosition()[0]][mOpponent.getCurrentPosition()[1]];
-            int opponentPositionHigh = mBoardTowerList[opponentPosition[0]][opponentPosition[1]];
-
-            if ((playerPositionHigh != GameConst.OUTSIDE_TOWER_HIGH) && (playerPositionHigh < GameConst.MAX_TOWER_HIGH) && Math.abs(playerCurrentPositionHigh - playerPositionHigh) <= GameConst.DIFFERENCE_IN_HEIGHT) {
-                playerCanMove = true;
-            }
-
-            if ((opponentPositionHigh != GameConst.OUTSIDE_TOWER_HIGH) && (opponentPositionHigh < GameConst.MAX_TOWER_HIGH) && Math.abs(opponentCurrentPositionHigh - opponentPositionHigh) <= GameConst.DIFFERENCE_IN_HEIGHT) {
-                opponentCanMove = true;
-            }
-        }
-
-        if (!playerCanMove && !opponentCanMove) {
-            return GameStatus.DRAW;
-        } else if (!playerCanMove) {
-            return GameStatus.LOSE;
-        } else if (!opponentCanMove) {
-            return GameStatus.WIN;
-        }
-
-        return GameStatus.PLAYING;
     }
 
     /**
@@ -252,23 +238,23 @@ public class TowerWalkBoardView extends SurfaceView implements SurfaceHolder.Cal
      */
     private void drawGameBoard() {
 
-        mCanvas = getHolder().lockCanvas();
-        mCanvas.drawColor(Color.GRAY);
+        Canvas canvas = getHolder().lockCanvas();
+        canvas.drawColor(Color.GRAY);
 
         // タワーを描写する
         for (int i = 0; i < mBoardTowerList.length; i++) {
             for (int t = 0; t < mBoardTowerList[i].length; t++) {
                 if (mBoardTowerList[i][t] != GameConst.OUTSIDE_TOWER_HIGH) {
-                    mCanvas.drawBitmap(mBitmapTowerList.get(mBoardTowerList[i][t] - 1), mTowerSquareLength * (t - 1), mTowerSquareLength * (i - 1), null);
+                    canvas.drawBitmap(mBitmapTowerList.get(mBoardTowerList[i][t] - 1), mTowerSquareLength * (t - 1), mTowerSquareLength * (i - 1), null);
                 }
             }
         }
 
         // プレイヤーと対戦相手を描写する
-        mCanvas.drawBitmap(mBitmapPlayer, mPlayer.getLeft(), mPlayer.getTop(), null);
-        mCanvas.drawBitmap(mBitmapOpponent, mOpponent.getLeft(), mOpponent.getTop(), null);
+        canvas.drawBitmap(mBitmapPlayer, mPlayer.getLeft(), mPlayer.getTop(), null);
+        canvas.drawBitmap(mBitmapOpponent, mOpponent.getLeft(), mOpponent.getTop(), null);
 
-        getHolder().unlockCanvasAndPost(mCanvas);
+        getHolder().unlockCanvasAndPost(canvas);
     }
 
     /**
@@ -295,7 +281,16 @@ public class TowerWalkBoardView extends SurfaceView implements SurfaceHolder.Cal
         // 位置を更新
         characterIcon.setCurrentPosition(nextPosition);
         mBoardTowerList[nextPosition[0]][nextPosition[1]] += 1;
+        drawGameBoard();
         return true;
+    }
+
+    /**
+     * ゲームの勝敗を描画する
+     */
+    private void showGameResult(String result, TextView resultText) {
+        resultText.setVisibility(VISIBLE);
+        resultText.setText(result);
     }
 
     private class OnClickListener implements View.OnClickListener {
@@ -304,6 +299,8 @@ public class TowerWalkBoardView extends SurfaceView implements SurfaceHolder.Cal
         private List<ImageView> mButtonList = new ArrayList<>();
         // ボタンを押下時のコールバック
         private OnClickCallback mCallback;
+        // 押されたキーの種別
+        KeyMapConst.KeyMap mClickButtonKey;
 
         private OnClickListener(OnClickCallback callback, ImageView... imageViews) {
             mButtonList.addAll(Arrays.asList(imageViews));
@@ -327,36 +324,48 @@ public class TowerWalkBoardView extends SurfaceView implements SurfaceHolder.Cal
 
             switch (button.getTag().toString()) {
                 case KeyMapConst.BUTTON_LEFT:
-                    mCallback.onCall(notifyChanged(KeyMapConst.KeyMap.LEFT));
+                    mClickButtonKey = KeyMapConst.KeyMap.LEFT;
                     break;
                 case KeyMapConst.BUTTON_TOP:
-                    mCallback.onCall(notifyChanged(KeyMapConst.KeyMap.TOP));
+                    mClickButtonKey = KeyMapConst.KeyMap.TOP;
                     break;
                 case KeyMapConst.BUTTON_RIGHT:
-                    mCallback.onCall(notifyChanged(KeyMapConst.KeyMap.RIGHT));
+                    mClickButtonKey = KeyMapConst.KeyMap.RIGHT;
                     break;
                 case KeyMapConst.BUTTON_BOTTOM:
-                    mCallback.onCall(notifyChanged(KeyMapConst.KeyMap.BOTTOM));
+                    mClickButtonKey = KeyMapConst.KeyMap.BOTTOM;
                     break;
             }
 
-            for (ImageView btn : mButtonList) {
-                btn.setEnabled(true);
-            }
+            Handler handler = new Handler(Looper.getMainLooper());
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    if (mClickButtonKey == null) {
+                        return;
+                    }
+                    mCallback.onCall(notifyChanged(mClickButtonKey));
 
-            for (KeyMapConst.KeyMap keyMap : KeyMapConst.KeyMap.values()) {
-                int[] nextPosition = new int[]{mPlayer.getCurrentPosition()[0] + keyMap.getDistance()[0], mPlayer.getCurrentPosition()[1] + keyMap.getDistance()[1]};
-                int currentPositionHigh = mBoardTowerList[mPlayer.getCurrentPosition()[0]][mPlayer.getCurrentPosition()[1]];
-                int nextPositionHigh = mBoardTowerList[nextPosition[0]][nextPosition[1]];
-
-                if ((nextPositionHigh == GameConst.OUTSIDE_TOWER_HIGH) || (nextPositionHigh >= GameConst.MAX_TOWER_HIGH) || Math.abs(currentPositionHigh - nextPositionHigh) > GameConst.DIFFERENCE_IN_HEIGHT) {
                     for (ImageView btn : mButtonList) {
-                        if (TextUtils.equals(btn.getTag().toString(), keyMap.getStatus())) {
-                            btn.setEnabled(false);
+                        btn.setEnabled(true);
+                    }
+
+                    for (KeyMapConst.KeyMap keyMap : KeyMapConst.KeyMap.values()) {
+                        int[] nextPosition = new int[]{mPlayer.getCurrentPosition()[0] + keyMap.getDistance()[0], mPlayer.getCurrentPosition()[1] + keyMap.getDistance()[1]};
+                        int currentPositionHigh = mBoardTowerList[mPlayer.getCurrentPosition()[0]][mPlayer.getCurrentPosition()[1]];
+                        int nextPositionHigh = mBoardTowerList[nextPosition[0]][nextPosition[1]];
+
+                        if ((nextPositionHigh == GameConst.OUTSIDE_TOWER_HIGH) || (nextPositionHigh >= GameConst.MAX_TOWER_HIGH) || Math.abs(currentPositionHigh - nextPositionHigh) > GameConst.DIFFERENCE_IN_HEIGHT) {
+                            for (ImageView btn : mButtonList) {
+                                if (TextUtils.equals(btn.getTag().toString(), keyMap.getStatus())) {
+                                    btn.setEnabled(false);
+                                }
+                            }
                         }
                     }
+                    mClickFrag = true;
                 }
-            }
+            });
         }
     }
 }

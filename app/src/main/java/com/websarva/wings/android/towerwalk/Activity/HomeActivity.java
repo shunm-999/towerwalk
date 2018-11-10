@@ -10,8 +10,6 @@ import com.websarva.wings.android.towerwalk.R;
 
 public class HomeActivity extends AppCompatActivity {
 
-    private static final int MP = ViewGroup.LayoutParams.MATCH_PARENT;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

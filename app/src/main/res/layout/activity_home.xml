@@ -4,11 +4,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Activity.HomeActivity">
+    tools:context=".activity.GameActivity">
 
     <fragment
         android:id="@+id/game_play_fragment"
-        android:name="com.websarva.wings.android.towerwalk.Fragment.GamePlayFragment"
+        android:name="com.websarva.wings.android.towerwalk.fragment.GamePlayFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 

@@ -1,4 +1,4 @@
-package com.websarva.wings.android.towerwalk.Fragment;
+package com.websarva.wings.android.towerwalk.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -11,11 +11,9 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.websarva.wings.android.towerwalk.CustomView.TowerWalkBoardView;
+import com.websarva.wings.android.towerwalk.customView.TowerWalkBoardView;
 import com.websarva.wings.android.towerwalk.R;
-import com.websarva.wings.android.towerwalk.Const.KeyMapConst;
-
-import org.w3c.dom.Text;
+import com.websarva.wings.android.towerwalk.consts.KeyMapConst;
 
 public class GamePlayFragment extends Fragment {
 

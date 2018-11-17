@@ -1,9 +1,9 @@
-package com.websarva.wings.android.towerwalk.Util;
+package com.websarva.wings.android.towerwalk.util;
 
 import android.content.Context;
 import android.util.DisplayMetrics;
 
-public class ConvertUtil {
+public class ConvertUtils {
     /**
      * dpからpixelへの変換
      *

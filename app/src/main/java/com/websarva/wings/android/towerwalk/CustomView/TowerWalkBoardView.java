@@ -1,4 +1,4 @@
-package com.websarva.wings.android.towerwalk.CustomView;
+package com.websarva.wings.android.towerwalk.customView;
 
 import android.content.Context;
 import android.content.res.Resources;
@@ -6,7 +6,7 @@ import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Paint;
+import android.os.Handler;
 import android.os.Looper;
 import android.text.TextUtils;
 import android.util.Log;
@@ -14,41 +14,31 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
 
-import com.websarva.wings.android.towerwalk.Algorithm.ReductionAndConquerAlgorithm;
-import com.websarva.wings.android.towerwalk.Callback.OnClickCallback;
-import com.websarva.wings.android.towerwalk.Const.GameConst;
-import com.websarva.wings.android.towerwalk.Const.KeyMapConst;
-import com.websarva.wings.android.towerwalk.Controller.Controller;
-import com.websarva.wings.android.towerwalk.Controller.GameController;
-import com.websarva.wings.android.towerwalk.Item.CharacterIcon;
+import com.websarva.wings.android.towerwalk.algorithm.ReductionAndConquerAlgorithm;
+import com.websarva.wings.android.towerwalk.callback.OnClickCallback;
+import com.websarva.wings.android.towerwalk.consts.GameConst;
+import com.websarva.wings.android.towerwalk.consts.KeyMapConst;
+import com.websarva.wings.android.towerwalk.controller.Controller;
+import com.websarva.wings.android.towerwalk.controller.GameController;
+import com.websarva.wings.android.towerwalk.data.GameRecord;
+import com.websarva.wings.android.towerwalk.db.TowerWalkDB;
+import com.websarva.wings.android.towerwalk.item.CharacterIcon;
 import com.websarva.wings.android.towerwalk.R;
-import com.websarva.wings.android.towerwalk.Util.BitmapResizer;
-import com.websarva.wings.android.towerwalk.Util.ConvertUtil;
+import com.websarva.wings.android.towerwalk.util.BitmapResizer;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import android.os.Handler;
-import android.widget.TextView;
-
 public class TowerWalkBoardView extends SurfaceView implements SurfaceHolder.Callback {
 
     // TAG
     private static final String TAG = TowerWalkBoardView.class.getSimpleName();
-    // 文字の大きさ
-    private static final int TEXT_SIZE = 50;
 
-    // ゲームの勝敗
-    public enum GameStatus {
-        PLAYING,
-        DRAW,
-        WIN,
-        LOSE,
-        ERROR
-    }
-
+    // 対戦記録を保持するリスト
+    private GameRecord mGameRecord = new GameRecord();
     // ゲームの制御コントローラー
     private Controller mGameController = new GameController();
 
@@ -88,20 +78,10 @@ public class TowerWalkBoardView extends SurfaceView implements SurfaceHolder.Cal
         // 操作用のボタンを登録
         OnClickListener clickListener = new OnClickListener(new OnClickCallback() {
             @Override
-            public void onCall(GameStatus gameStatus) {
-                switch (gameStatus) {
-                    case WIN:
-                        showGameResult(getResources().getString(R.string.tower_walk_board_view_game_result_win), resultText);
-                        break;
-                    case DRAW:
-                        showGameResult(getResources().getString(R.string.tower_walk_board_view_game_result_draw), resultText);
-                        break;
-                    case LOSE:
-                        showGameResult(getResources().getString(R.string.tower_walk_board_view_game_result_lose), resultText);
-                        break;
-                    case ERROR:
-                        showGameResult(getResources().getString(R.string.tower_walk_board_view_game_result_error), resultText);
-                        break;
+            public void onCall(GameConst.GameStatus gameStatus) {
+                if (gameStatus != GameConst.GameStatus.PLAYING) {
+                    showGameResult(getResources().getString(gameStatus.getResultTextCode()), resultText);
+                    TowerWalkDB.recordResult(gameStatus, mGameRecord);
                 }
             }
         }, imageViews);
@@ -206,29 +186,35 @@ public class TowerWalkBoardView extends SurfaceView implements SurfaceHolder.Cal
     /**
      * ボタンが押下されたことを通知する
      */
-    private GameStatus notifyChanged(KeyMapConst.KeyMap keyMap) {
+    private GameConst.GameStatus notifyChanged(KeyMapConst.KeyMap keyMap) {
 
         // ゲームの進行状況を表す変数
-        GameStatus currentGameStatus;
+        GameConst.GameStatus currentGameStatus;
         int[] playerDistance = keyMap.getDistance();
+        // 差し手を保存する
+        mGameRecord.append(playerDistance);
+
         if (!movePlayerIcon(mPlayer, playerDistance)) {
-            return GameStatus.ERROR;
+            return GameConst.GameStatus.ERROR;
         }
         drawGameBoard();
 
         // ゲームの進行状況を判定する
         currentGameStatus = mGameController.judgeGame(mPlayer, mOpponent, mBoardTowerList);
-        if (currentGameStatus != GameStatus.PLAYING) return currentGameStatus;
+        if (currentGameStatus != GameConst.GameStatus.PLAYING) return currentGameStatus;
 
         int[] opponentDistance = new ReductionAndConquerAlgorithm().decideNextPosition(mBoardTowerList, mOpponent, mPlayer);
+        // 差し手を保存する
+        mGameRecord.append(opponentDistance);
+
         if (!movePlayerIcon(mOpponent, opponentDistance)) {
-            return GameStatus.ERROR;
+            return GameConst.GameStatus.ERROR;
         }
         drawGameBoard();
 
         // ゲームの進行状況を判定する
         currentGameStatus = mGameController.judgeGame(mPlayer, mOpponent, mBoardTowerList);
-        if (currentGameStatus != GameStatus.PLAYING) return currentGameStatus;
+        if (currentGameStatus != GameConst.GameStatus.PLAYING) return currentGameStatus;
 
         return currentGameStatus;
     }

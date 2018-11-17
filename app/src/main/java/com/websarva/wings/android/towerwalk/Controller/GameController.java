@@ -1,9 +1,9 @@
-package com.websarva.wings.android.towerwalk.Controller;
+package com.websarva.wings.android.towerwalk.controller;
 
-import com.websarva.wings.android.towerwalk.Const.GameConst;
-import com.websarva.wings.android.towerwalk.Const.KeyMapConst;
-import com.websarva.wings.android.towerwalk.CustomView.TowerWalkBoardView.GameStatus;
-import com.websarva.wings.android.towerwalk.Item.CharacterIcon;
+import com.websarva.wings.android.towerwalk.consts.GameConst;
+import com.websarva.wings.android.towerwalk.consts.KeyMapConst;
+import com.websarva.wings.android.towerwalk.consts.GameConst.GameStatus;
+import com.websarva.wings.android.towerwalk.item.CharacterIcon;
 
 public class GameController implements Controller {
 
@@ -32,13 +32,13 @@ public class GameController implements Controller {
         }
 
         if (!playerCanMove && !opponentCanMove) {
-            return GameStatus.DRAW;
+            return GameConst.GameStatus.DRAW;
         } else if (!playerCanMove) {
-            return GameStatus.LOSE;
+            return GameConst.GameStatus.LOSE;
         } else if (!opponentCanMove) {
-            return GameStatus.WIN;
+            return GameConst.GameStatus.WIN;
         }
 
-        return GameStatus.PLAYING;
+        return GameConst.GameStatus.PLAYING;
     }
 }

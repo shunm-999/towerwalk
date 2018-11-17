@@ -4,10 +4,11 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.support.annotation.NonNull;
 
-import com.websarva.wings.android.towerwalk.Util.LogUtils;
+import com.websarva.wings.android.towerwalk.util.LogUtils;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -22,7 +23,7 @@ public abstract class Database {
     /**
      * 検索結果を格納するクラス
      */
-    protected class Result extends LinkedHashMap<String, String> {
+    protected static class Result extends LinkedHashMap<String, String> {
 
         /**
          * 結果を文字列で取得する
@@ -68,7 +69,7 @@ public abstract class Database {
     /**
      * 検索結果のリストを格納するクラス
      */
-    protected class ResultSet extends ArrayList<Result> {
+    protected static class ResultSet extends ArrayList<Result> {
 
     }
 
@@ -79,7 +80,7 @@ public abstract class Database {
      * @param sqLiteOpenHelper データベースヘルパーオブジェクト
      * @return テーブル内の全てのデータ
      */
-    protected ResultSet selectAll(@NonNull String tableName, SQLiteOpenHelper sqLiteOpenHelper) {
+    protected static ResultSet selectAll(@NonNull String tableName, SQLiteOpenHelper sqLiteOpenHelper) {
         ResultSet resultSet = new ResultSet();
 
         SQLiteDatabase database = sqLiteOpenHelper.getWritableDatabase();
@@ -111,7 +112,7 @@ public abstract class Database {
      * @param sqLiteOpenHelper データベースヘルパーオブジェクト
      * @return 条件に該当するデータ
      */
-    protected ResultSet select(@NonNull String tableName, ContentValues contentValues, @NonNull SQLiteOpenHelper sqLiteOpenHelper) {
+    protected static ResultSet select(@NonNull String tableName, ContentValues contentValues, @NonNull SQLiteOpenHelper sqLiteOpenHelper) {
         if ((contentValues == null) || (contentValues.size() == 0)) {
             return selectAll(tableName, sqLiteOpenHelper);
         }
@@ -165,9 +166,18 @@ public abstract class Database {
      * @param sqLiteOpenHelper データベースヘルパーオブジェクト
      * @return 挿入件数
      */
-    protected long insert(@NonNull String tableName, ContentValues contentValues, @NonNull SQLiteOpenHelper sqLiteOpenHelper) {
+    protected static long insert(@NonNull String tableName, ContentValues contentValues, @NonNull SQLiteOpenHelper sqLiteOpenHelper) {
+        long result = 0;
         SQLiteDatabase database = sqLiteOpenHelper.getWritableDatabase();
-        return database.insert(tableName, null, contentValues);
+        try {
+            result = database.insert(tableName, null, contentValues);
+        } catch (SQLiteException e) {
+            LogUtils.eTag(TAG, e.getMessage());
+            result = -1;
+        } finally {
+            database.close();
+        }
+        return result;
     }
 
     /**
@@ -177,9 +187,18 @@ public abstract class Database {
      * @param sqLiteOpenHelper データベースヘルパーオブジェクト
      * @return 削除した件数
      */
-    protected int deleteAll(@NonNull String tableName, @NonNull SQLiteOpenHelper sqLiteOpenHelper) {
+    protected static int deleteAll(@NonNull String tableName, @NonNull SQLiteOpenHelper sqLiteOpenHelper) {
+        int result = 0;
         SQLiteDatabase database = sqLiteOpenHelper.getWritableDatabase();
-        return database.delete(tableName, null, null);
+        try {
+            result = database.delete(tableName, null, null);
+        } catch (SQLiteException e) {
+            LogUtils.eTag(TAG, e.getMessage());
+            result = -1;
+        } finally {
+            database.close();
+        }
+        return result;
     }
 
     /**
@@ -190,7 +209,7 @@ public abstract class Database {
      * @param sqLiteOpenHelper データベースヘルパーオブジェクト
      * @return 削除件数
      */
-    protected int delete(@NonNull String tableName, ContentValues contentValues, @NonNull SQLiteOpenHelper sqLiteOpenHelper) {
+    protected static int delete(@NonNull String tableName, ContentValues contentValues, @NonNull SQLiteOpenHelper sqLiteOpenHelper) {
         if ((contentValues == null) || (contentValues.size() == 0)) {
             return deleteAll(tableName, sqLiteOpenHelper);
         }
@@ -216,6 +235,16 @@ public abstract class Database {
 
         String sqlDelete = stringBuilder.toString();
 
-        return database.delete(tableName, sqlDelete, values.toArray(new String[values.size()]));
+        int result = 0;
+        try {
+            result = database.delete(tableName, sqlDelete, values.toArray(new String[values.size()]));
+        } catch (SQLiteException e) {
+            LogUtils.eTag(TAG, e.getMessage());
+            result = -1;
+        } finally {
+            database.close();
+        }
+
+        return result;
     }
 }

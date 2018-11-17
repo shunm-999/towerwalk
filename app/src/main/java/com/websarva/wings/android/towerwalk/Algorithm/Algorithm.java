@@ -1,8 +1,8 @@
-package com.websarva.wings.android.towerwalk.Algorithm;
+package com.websarva.wings.android.towerwalk.algorithm;
 
-import com.websarva.wings.android.towerwalk.Const.GameConst;
-import com.websarva.wings.android.towerwalk.Const.KeyMapConst;
-import com.websarva.wings.android.towerwalk.Item.CharacterIcon;
+import com.websarva.wings.android.towerwalk.consts.GameConst;
+import com.websarva.wings.android.towerwalk.consts.KeyMapConst;
+import com.websarva.wings.android.towerwalk.item.CharacterIcon;
 
 public abstract class Algorithm {
 

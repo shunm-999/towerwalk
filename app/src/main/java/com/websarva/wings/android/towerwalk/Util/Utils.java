@@ -1,4 +1,4 @@
-package com.websarva.wings.android.towerwalk.Util;
+package com.websarva.wings.android.towerwalk.util;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;

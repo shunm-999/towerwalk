@@ -1,8 +1,8 @@
-package com.websarva.wings.android.towerwalk.Algorithm;
+package com.websarva.wings.android.towerwalk.algorithm;
 
 import android.util.Log;
 
-import com.websarva.wings.android.towerwalk.Const.KeyMapConst;
+import com.websarva.wings.android.towerwalk.consts.KeyMapConst;
 
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;

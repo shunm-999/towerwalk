@@ -5,14 +5,14 @@ import android.os.Bundle;
 import com.websarva.wings.android.towerwalk.R;
 
 /**
- * 対戦画面
+ * 対戦記録画面
  */
-public class GameActivity extends BaseActivity {
+public class GameResultActivity extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_game);
+        setContentView(R.layout.activity_game_result);
         overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
     }
 }

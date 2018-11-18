@@ -3,7 +3,7 @@ package com.websarva.wings.android.towerwalk.fragment;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,11 +11,14 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.websarva.wings.android.towerwalk.customView.TowerWalkBoardView;
 import com.websarva.wings.android.towerwalk.R;
 import com.websarva.wings.android.towerwalk.consts.KeyMapConst;
+import com.websarva.wings.android.towerwalk.customView.TowerWalkBoardView;
 
-public class GamePlayFragment extends Fragment {
+/**
+ * 対戦画面
+ */
+public class GamePlayFragment extends BaseFragment {
 
     private static final int MP = ViewGroup.LayoutParams.MATCH_PARENT;
 
@@ -27,6 +30,7 @@ public class GamePlayFragment extends Fragment {
         return contentView;
     }
 
+    @Override
     public void setupLayout(View contentView) {
         LinearLayout boardWrapperLayout = contentView.findViewById(R.id.board_wrapper_layout);
         boardWrapperLayout.removeAllViews();

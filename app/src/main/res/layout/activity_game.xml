@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/bg_common_pattern"
-    tools:context=".activity.HomeActivity">
+    tools:context=".activity.GameActivity">
 
     <fragment
-        android:id="@+id/fragment_game_play"
-        android:name="com.websarva.wings.android.towerwalk.fragment.HomeFragment"
+        android:id="@+id/game_play_fragment"
+        android:name="com.websarva.wings.android.towerwalk.fragment.GamePlayFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
-</RelativeLayout>
+</LinearLayout>

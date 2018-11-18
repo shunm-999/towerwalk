@@ -225,7 +225,7 @@ public class TowerWalkBoardView extends SurfaceView implements SurfaceHolder.Cal
     private void drawGameBoard() {
 
         Canvas canvas = getHolder().lockCanvas();
-        canvas.drawColor(Color.GRAY);
+        canvas.drawColor(Color.BLACK);
 
         // タワーを描写する
         for (int i = 0; i < mBoardTowerList.length; i++) {

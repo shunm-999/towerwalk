@@ -1,9 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/layout_activity_transition"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/bg_common_pattern"
     tools:context=".activity.GameResultActivity">
 
-</LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/bg_common_pattern"
+        android:orientation="vertical"
+        android:translationZ="-2dp">
+
+        <fragment
+            android:id="@+id/fragment_game_result"
+            android:name="com.websarva.wings.android.towerwalk.fragment.GameResultFragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+    </LinearLayout>
+
+</FrameLayout>

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- disable -->
+    <item android:drawable="@drawable/button_record_back_disable" android:state_enabled="false" />
+    <!-- default -->
+    <item android:drawable="@drawable/button_record_back" />
+</selector>

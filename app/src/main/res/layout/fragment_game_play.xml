@@ -24,7 +24,7 @@
             android:orientation="vertical" />
 
         <TextView
-            android:id="@+id/game_result"
+            android:id="@+id/text_game_result"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -84,7 +84,7 @@
                     android:layout_above="@id/center_button"
                     android:layout_centerHorizontal="true"
                     android:contentDescription="@null"
-                    app:srcCompat="@drawable/button_top_selector" />
+                    app:srcCompat="@drawable/selector_button_top" />
 
                 <!-- ボタン（左） -->
                 <ImageView
@@ -94,7 +94,7 @@
                     android:layout_centerVertical="true"
                     android:layout_toLeftOf="@id/center_button"
                     android:contentDescription="@null"
-                    app:srcCompat="@drawable/button_left_selector" />
+                    app:srcCompat="@drawable/selector_button_left" />
 
                 <!-- ボタン（右） -->
                 <ImageView
@@ -104,7 +104,7 @@
                     android:layout_centerVertical="true"
                     android:layout_toRightOf="@id/center_button"
                     android:contentDescription="@null"
-                    app:srcCompat="@drawable/button_right_selector" />
+                    app:srcCompat="@drawable/selector_button_right" />
 
                 <!-- ボタン（下） -->
                 <ImageView
@@ -114,7 +114,7 @@
                     android:layout_below="@id/center_button"
                     android:layout_centerHorizontal="true"
                     android:contentDescription="@null"
-                    app:srcCompat="@drawable/button_bottom_selector" />
+                    app:srcCompat="@drawable/selector_button_bottom" />
 
             </RelativeLayout>
 

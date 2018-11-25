@@ -4,6 +4,8 @@ import com.websarva.wings.android.towerwalk.R;
 
 public class GameConst {
 
+    // 行数・列数
+    public static final int SQUARE_NUMBER = 5;
     // タワーの最大の高さ
     public static final int MAX_TOWER_HIGH = 5;
     // 領域外のタワーの値

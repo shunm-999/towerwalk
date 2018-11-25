@@ -9,28 +9,28 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingLeft="50dp"
-        android:paddingRight="50dp"
         android:layout_centerInParent="true"
         android:gravity="center_horizontal"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:paddingLeft="50dp"
+        android:paddingRight="50dp">
 
         <ImageView
             android:id="@+id/image_battle"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.5"
+            android:layout_width="100dp"
+            android:layout_height="110dp"
             android:layout_marginRight="20dp"
             android:contentDescription="@null"
-            app:srcCompat="@drawable/button_battle_selector" />
+            android:scaleType="fitCenter"
+            app:srcCompat="@drawable/selector_button_battle" />
 
         <ImageView
             android:id="@+id/image_memory"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.5"
+            android:layout_width="100dp"
+            android:layout_height="110dp"
             android:contentDescription="@null"
-            app:srcCompat="@drawable/button_memory_selector" />
+            android:scaleType="fitCenter"
+            app:srcCompat="@drawable/selector_button_memory" />
 
     </LinearLayout>
 

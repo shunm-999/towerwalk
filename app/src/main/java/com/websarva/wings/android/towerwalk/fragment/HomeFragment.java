@@ -2,6 +2,7 @@ package com.websarva.wings.android.towerwalk.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,14 +23,14 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View contentView = inflater.inflate(R.layout.fragment_home, container, false);
         setupLayout(contentView);
         return contentView;
     }
 
     @Override
-    public void setupLayout(View contentView) {
+    protected void setupLayout(View contentView) {
         // 対戦画面に遷移するボタン
         ImageView imageButtonBattle = contentView.findViewById(R.id.image_battle);
         imageButtonBattle.setOnClickListener(this);

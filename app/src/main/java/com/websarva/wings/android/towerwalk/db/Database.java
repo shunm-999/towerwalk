@@ -23,7 +23,7 @@ public abstract class Database {
     /**
      * 検索結果を格納するクラス
      */
-    protected static class Result extends LinkedHashMap<String, String> {
+    public static class Result extends LinkedHashMap<String, String> {
 
         /**
          * 結果を文字列で取得する
@@ -69,7 +69,7 @@ public abstract class Database {
     /**
      * 検索結果のリストを格納するクラス
      */
-    protected static class ResultSet extends ArrayList<Result> {
+    public static class ResultSet extends ArrayList<Result> {
 
     }
 
@@ -127,7 +127,7 @@ public abstract class Database {
 
         for (Map.Entry<String, Object> entry : contentValues.valueSet()) {
             columns.add(entry.getKey());
-            values.add(entry.getKey());
+            values.add(entry.getValue().toString());
         }
 
         for (int i = 0; i < contentValues.size(); i++) {

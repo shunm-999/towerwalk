@@ -5,18 +5,18 @@ public class CompetitionHistoryDetailTable extends Table {
     // タグ
     private static final String TAG = CompetitionHistoryTable.class.getSimpleName();
     // テーブル名
-    static final String TABLE_NAME = "CompetitionHistoryDetailTable";
+    public static final String TABLE_NAME = "CompetitionHistoryDetailTable";
 
     // 対戦記録ID
-    static final String COLUMN_HISTORY_ID = "history_id";
+    public static final String COLUMN_HISTORY_ID = "history_id";
     // 何手目か
-    static final String COLUMN_COUNT = "count";
+    public static final String COLUMN_COUNT = "count";
     // 手番
-    static final String COLUMN_TURN = "turn";
+    public static final String COLUMN_TURN = "turn";
     // 行
-    static final String COLUMN_LINE = "line";
+    public static final String COLUMN_LINE = "line";
     // 列
-    static final String COLUMN_ROW = "row";
+    public static final String COLUMN_ROW = "row";
 
     // 手番のリスト
     enum GameTurn {

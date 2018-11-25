@@ -23,8 +23,6 @@ public class TowerWalkDB extends Database {
 
     // タグ
     private static final String TAG = TowerWalkDB.class.getSimpleName();
-    // 自身のインスタンス
-    private static final TowerWalkDB sTowerWalkDB = new TowerWalkDB();
 
     // データベース名
     static final String DATABASE_NAME = "towerwalk.db";
@@ -63,7 +61,7 @@ public class TowerWalkDB extends Database {
             stringBuilder.append(" CREATE TABLE " + CompetitionHistoryTable.TABLE_NAME);
             stringBuilder.append(" ( ");
             stringBuilder.append(BaseColumns._ID + " INTEGER PRIMARY KEY AUTOINCREMENT , ");
-            stringBuilder.append(CompetitionHistoryTable.COLUMN_GAME_RESULT + " TEXT , ");
+            stringBuilder.append(CompetitionHistoryTable.COLUMN_GAME_RESULT + " INTEGER , ");
             stringBuilder.append(CompetitionHistoryTable.COLUMN_NAME + " TEXT , ");
             stringBuilder.append(CompetitionHistoryTable.COLUMN_CREATE_DATE + " TEXT  ");
             stringBuilder.append(" ); ");
@@ -146,7 +144,6 @@ public class TowerWalkDB extends Database {
             } else {
                 return -1;
             }
-            Log.i("結果", "" + historyId);
 
             stringBuilder = new StringBuilder();
             stringBuilder.append(" INSERT INTO " + CompetitionHistoryDetailTable.TABLE_NAME + " ( ");
@@ -166,7 +163,7 @@ public class TowerWalkDB extends Database {
                 for (int i = 0; i < resultList.size(); i++) {
                     Map<Integer, Integer> position = resultList.get(i);
                     sqLiteStatement.bindLong(2, i);
-                    sqLiteStatement.bindLong(3, (i + 1) % 2);
+                    sqLiteStatement.bindLong(3, i % 2);
                     for (Map.Entry<Integer, Integer> entry : position.entrySet()) {
                         sqLiteStatement.bindLong(4, entry.getKey());
                         sqLiteStatement.bindLong(5, entry.getValue());
@@ -191,5 +188,23 @@ public class TowerWalkDB extends Database {
         }
 
         return insertNumber;
+    }
+
+    /**
+     * 対戦記録画面用のデータを取得する
+     *
+     * @return 対戦記録のリスト
+     */
+    public static ResultSet getGameResultData() {
+        return selectAll(CompetitionHistoryTable.TABLE_NAME, sDatabaseHelper);
+    }
+
+    /**
+     * 対戦記録詳細画面用のデータを取得する
+     */
+    public static ResultSet getGameResultDetailData(int historyId) {
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(CompetitionHistoryDetailTable.COLUMN_HISTORY_ID, historyId);
+        return select(CompetitionHistoryDetailTable.TABLE_NAME, contentValues, sDatabaseHelper);
     }
 }

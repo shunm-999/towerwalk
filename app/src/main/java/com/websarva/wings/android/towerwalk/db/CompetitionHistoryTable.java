@@ -5,16 +5,16 @@ public class CompetitionHistoryTable {
     // タグ
     private static final String TAG = CompetitionHistoryTable.class.getSimpleName();
     // テーブル名
-    static final String TABLE_NAME = "CompetitionHistoryTable";
+    public static final String TABLE_NAME = "CompetitionHistoryTable";
     // 勝敗
-    static final String COLUMN_GAME_RESULT = "game_result";
+    public static final String COLUMN_GAME_RESULT = "game_result";
     // 名前
-    static final String COLUMN_NAME = "name";
+    public static final String COLUMN_NAME = "name";
     // 対戦日
-    static final String COLUMN_CREATE_DATE = "create_date";
+    public static final String COLUMN_CREATE_DATE = "create_date";
 
     // 勝敗のリスト
-    enum GameResult {
+    public enum GameResult {
         WIN(0),
         DRAW(1),
         LOSE(2);
@@ -24,7 +24,7 @@ public class CompetitionHistoryTable {
         /**
          * GameResultを構築する
          */
-        GameResult(int result) {
+        GameResult(final int result) {
             mResult = result;
         }
 

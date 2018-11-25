@@ -3,7 +3,6 @@ package com.websarva.wings.android.towerwalk.fragment;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,14 +11,16 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.websarva.wings.android.towerwalk.R;
+import com.websarva.wings.android.towerwalk.consts.GameConst;
 import com.websarva.wings.android.towerwalk.consts.KeyMapConst;
-import com.websarva.wings.android.towerwalk.customView.TowerWalkBoardView;
+import com.websarva.wings.android.towerwalk.customView.TowerWalkGameBoardView;
 
 /**
  * 対戦画面
  */
 public class GamePlayFragment extends BaseFragment {
 
+    // レイアウトの指定（親のコンテンツ幅に合わせる）
     private static final int MP = ViewGroup.LayoutParams.MATCH_PARENT;
 
     @Nullable
@@ -31,7 +32,7 @@ public class GamePlayFragment extends BaseFragment {
     }
 
     @Override
-    public void setupLayout(View contentView) {
+    protected void setupLayout(View contentView) {
         LinearLayout boardWrapperLayout = contentView.findViewById(R.id.board_wrapper_layout);
         boardWrapperLayout.removeAllViews();
 
@@ -54,10 +55,10 @@ public class GamePlayFragment extends BaseFragment {
         resetButton.setOnClickListener(new ResetButtonClickListener());
 
         // 結果表示用のテキストビュー
-        TextView resultText = contentView.findViewById(R.id.game_result);
+        TextView resultText = contentView.findViewById(R.id.text_game_result);
         resultText.setVisibility(View.GONE);
 
-        TowerWalkBoardView towerWalkBoardView = new TowerWalkBoardView(getContext(), 5, resultText, leftButton, topButton, rightButton, bottomButton);
+        TowerWalkGameBoardView towerWalkBoardView = new TowerWalkGameBoardView(getContext(), GameConst.SQUARE_NUMBER, resultText, leftButton, topButton, rightButton, bottomButton);
 
         boardWrapperLayout.addView(towerWalkBoardView, new LinearLayout.LayoutParams(MP, MP));
     }

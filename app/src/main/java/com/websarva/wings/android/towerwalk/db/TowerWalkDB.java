@@ -16,6 +16,8 @@ import com.websarva.wings.android.towerwalk.TowerWalkApplication;
 import com.websarva.wings.android.towerwalk.util.DateUtils;
 import com.websarva.wings.android.towerwalk.util.LogUtils;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
@@ -191,11 +193,33 @@ public class TowerWalkDB extends Database {
     }
 
     /**
-     * 対戦記録画面用のデータを取得する
+     * 対戦記録画面用のデータ一覧を取得する
      *
      * @return 対戦記録のリスト
      */
     public static ResultSet getGameResultData() {
+        ResultSet resultSet = selectAll(CompetitionHistoryTable.TABLE_NAME, sDatabaseHelper);
+        if (resultSet == null) {
+            return new ResultSet();
+        }
+        Collections.sort(resultSet, new Comparator<Result>() {
+            @Override
+            public int compare(Result result1, Result result2) {
+                return result2.getInt(BaseColumns._ID) - result1.getInt(BaseColumns._ID);
+            }
+        });
+        return resultSet;
+    }
+
+    /**
+     * シーケンスIDと一致する、対戦記録画面用のデータを取得する
+     *
+     * @param sequenceId シーケンスID
+     * @return 対戦記録のリスト
+     */
+    public static ResultSet getGameResultData(int sequenceId) {
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(BaseColumns._ID, sequenceId);
         return selectAll(CompetitionHistoryTable.TABLE_NAME, sDatabaseHelper);
     }
 

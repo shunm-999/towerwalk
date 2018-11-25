@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.websarva.wings.android.towerwalk.R;
@@ -26,7 +27,16 @@ public class GameResultDetailFragment extends BaseFragment implements TowerWalkG
     private static final int MP = ViewGroup.LayoutParams.MATCH_PARENT;
 
     // 対戦結果
-    private Database.ResultSet mResultSet = new Database.ResultSet();
+    private Database.ResultSet mGameResultSet = new Database.ResultSet();
+    // 対戦結果詳細
+    private Database.ResultSet mGameResultDetailSet = new Database.ResultSet();
+
+    // 再生画面
+    private TowerWalkGameResultView mTowerWalkGameResultView;
+    // プログラスを表示するテキスト
+    private TextView mTextProgress;
+    // シークバー
+    private SeekBar mSeekBar;
 
     // 次に進むボタン
     private ImageView mImageNextButton;
@@ -50,11 +60,17 @@ public class GameResultDetailFragment extends BaseFragment implements TowerWalkG
             return;
         }
         int sequenceId = bundle.getInt(BaseColumns._ID);
-        mResultSet = TowerWalkDB.getGameResultDetailData(sequenceId);
+        mGameResultSet = TowerWalkDB.getGameResultData(sequenceId);
+        mGameResultDetailSet = TowerWalkDB.getGameResultDetailData(sequenceId);
     }
 
     @Override
-    protected void setupLayout(View contentView) {
+    protected void setupLayout(View contentView) {// 画面タイトルをセット
+        TextView textBarTitle = contentView.findViewById(R.id.text_bar_title);
+        if (textBarTitle != null) {
+            textBarTitle.setText(R.string.fragment_game_result_detail_title);
+        }
+
         LinearLayout boardWrapperLayout = contentView.findViewById(R.id.board_wrapper_layout);
         boardWrapperLayout.removeAllViews();
 
@@ -68,15 +84,23 @@ public class GameResultDetailFragment extends BaseFragment implements TowerWalkG
         textGameResult.setVisibility(View.GONE);
 
         // 対戦結果を再生するカスタムビュー
-        TowerWalkGameResultView towerWalkGameResultView = new TowerWalkGameResultView(
+        mTowerWalkGameResultView = new TowerWalkGameResultView(
                 getContext(),
                 GameConst.SQUARE_NUMBER,
                 textGameResult,
-                mResultSet,
+                mGameResultDetailSet,
                 mImageNextButton,
                 mImageBackButton);
-        towerWalkGameResultView.registerCallBack(this);
-        boardWrapperLayout.addView(towerWalkGameResultView, new LinearLayout.LayoutParams(MP, MP));
+        mTowerWalkGameResultView.registerCallBack(this);
+        boardWrapperLayout.addView(mTowerWalkGameResultView, new LinearLayout.LayoutParams(MP, MP));
+
+        TextView textMax = contentView.findViewById(R.id.text_record_max);
+        textMax.setText(String.valueOf(mGameResultDetailSet.size()));
+        mTextProgress = contentView.findViewById(R.id.text_record_progress);
+
+        mSeekBar = contentView.findViewById(R.id.seek_bar_game_result);
+        mSeekBar.setMax(mGameResultDetailSet.size());
+        mSeekBar.setOnSeekBarChangeListener(new SeekBarChangeListener());
     }
 
     @Override
@@ -85,8 +109,42 @@ public class GameResultDetailFragment extends BaseFragment implements TowerWalkG
         mImageNextButton.setEnabled(true);
         if (pointer == 0) {
             mImageBackButton.setEnabled(false);
-        } else if (pointer >= mResultSet.size()) {
+        } else if (pointer >= mGameResultDetailSet.size()) {
             mImageNextButton.setEnabled(false);
+        }
+
+        mSeekBar.setProgress(pointer);
+        mTextProgress.setText(String.valueOf(pointer));
+    }
+
+    /**
+     * シークバーの状態変化のリスナー
+     */
+    private class SeekBarChangeListener implements SeekBar.OnSeekBarChangeListener {
+        @Override
+        public void onStartTrackingTouch(SeekBar seekBar) {
+
+        }
+
+        @Override
+        public void onProgressChanged(SeekBar seekBar, int position, boolean fromUser) {
+            if (fromUser) {
+                int pointer = mTowerWalkGameResultView.getPointer();
+                int count = Math.abs(position - pointer);
+
+                for (int i = 0; i < count; i++) {
+                    if (position > pointer) {
+                        mTowerWalkGameResultView.setPlayerIcon(true);
+                    } else if (position < pointer) {
+                        mTowerWalkGameResultView.setPlayerIcon(false);
+                    }
+                }
+            }
+        }
+
+        @Override
+        public void onStopTrackingTouch(SeekBar seekBar) {
+
         }
     }
 }

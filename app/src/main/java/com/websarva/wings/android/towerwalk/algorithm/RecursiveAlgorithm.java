@@ -15,10 +15,10 @@ import java.util.Map;
  * リストの中身は、（自分の行動不能ポイント[0]、相手の行動不能ポイント[1]、自分の行動可能ポイント[2]、
  * 相手の行動可能ポイント[3]、自分の詰みフラグ[4]、相手の詰みフラグ[5]、自分の詰みカウント[6]、相手の詰みカウント[7]）
  */
-public class ReductionAndConquerAlgorithm extends Algorithm {
+public class RecursiveAlgorithm extends Algorithm {
 
     // タグ
-    private static final String TAG = ReductionAndConquerAlgorithm.class.getSimpleName();
+    private static final String TAG = RecursiveAlgorithm.class.getSimpleName();
     // 探索の深さ
     private static final int SEARCH_DEPTH = 10;
 
@@ -129,7 +129,7 @@ public class ReductionAndConquerAlgorithm extends Algorithm {
             point[5] = 0.0;
         }
 
-        if (SEARCH_DEPTH <= count) {
+        if (count >= SEARCH_DEPTH) {
             return;
         }
 
@@ -138,12 +138,12 @@ public class ReductionAndConquerAlgorithm extends Algorithm {
 
                 if (playerFrag) {
                     // 自分の行動可能ポイントを増やす
-                    point[2] += Math.pow(0.25, (count + 1) / 2);
+                    point[2] += Math.pow(0.25, count);
                     // 自分の詰みフラグを解除
                     point[4] = 0.0;
                 } else {
                     // 相手の行動可能ポイントを増やす
-                    point[3] += Math.pow(0.25, count / 2);
+                    point[3] += Math.pow(0.25, count);
                     // 相手の詰みフラグを解除
                     point[5] = 0.0;
                 }
@@ -168,7 +168,7 @@ public class ReductionAndConquerAlgorithm extends Algorithm {
             } else {
                 if (playerFrag) {
                     // 自分の行動不能ポイントを増やす
-                    point[0] += Math.pow(0.25, (count + 1) / 2);
+                    point[0] += Math.pow(0.25, count);
                     if (keyMap == KeyMapConst.KeyMap.LEFT) {
                         // 自分の詰みフラグをセット
                         point[4] = 1.0;
@@ -179,7 +179,7 @@ public class ReductionAndConquerAlgorithm extends Algorithm {
                     }
                 } else {
                     // 相手の行動不能ポイントを増やす
-                    point[1] += Math.pow(0.25, count / 2);
+                    point[1] += Math.pow(0.25, count);
                     if (keyMap == KeyMapConst.KeyMap.LEFT) {
                         // 相手の詰みフラグをセット
                         point[5] = 1.0;

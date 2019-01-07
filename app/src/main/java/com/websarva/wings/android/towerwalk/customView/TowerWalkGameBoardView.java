@@ -8,7 +8,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.websarva.wings.android.towerwalk.algorithm.ReductionAndConquerAlgorithm;
+import com.websarva.wings.android.towerwalk.algorithm.RecursiveAlgorithm;
 import com.websarva.wings.android.towerwalk.consts.GameConst;
 import com.websarva.wings.android.towerwalk.consts.KeyMapConst;
 import com.websarva.wings.android.towerwalk.controller.Controller;
@@ -61,7 +61,7 @@ public class TowerWalkGameBoardView extends TowerWalkView implements SurfaceHold
         currentGameStatus = mGameController.judgeGame(mPlayer, mOpponent, mBoardTowerList);
         if (currentGameStatus != GameConst.GameStatus.PLAYING) return currentGameStatus;
 
-        int[] opponentDistance = new ReductionAndConquerAlgorithm().decideNextPosition(mBoardTowerList, mOpponent, mPlayer);
+        int[] opponentDistance = new RecursiveAlgorithm().decideNextPosition(mBoardTowerList, mOpponent, mPlayer);
 
         if (!movePlayerIcon(mOpponent, opponentDistance)) {
             return GameConst.GameStatus.ERROR;

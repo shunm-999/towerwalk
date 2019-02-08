@@ -5,86 +5,121 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".Fragment.GamePlayFragment">
+    tools:context=".fragment.GamePlayFragment">
 
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <TextView
-            android:id="@+id/game_result"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:textColor="@android:color/holo_red_dark" />
+        android:layout_height="0dp"
+        android:layout_weight="0.7"
+        android:background="@android:color/black"
+        android:paddingBottom="30dp"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:paddingTop="30dp">
 
         <LinearLayout
             android:id="@+id/board_wrapper_layout"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:layout_marginTop="30dp"
+            android:layout_height="wrap_content"
             android:orientation="vertical" />
+
+        <TextView
+            android:id="@+id/text_game_result"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:textColor="@android:color/holo_red_dark"
+            android:textSize="30dp"
+            android:textStyle="bold"
+            android:visibility="invisible" />
 
     </FrameLayout>
 
-    <RelativeLayout
-        android:layout_width="120dp"
-        android:layout_height="120dp"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="10dp">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        android:layout_weight="0.3"
+        android:background="@android:color/white"
+        android:gravity="center_vertical"
+        android:orientation="vertical">
 
-        <!-- ボタン中央 -->
-        <ImageView
-            android:id="@+id/center_button"
-            android:layout_width="@dimen/button_size"
-            android:layout_height="@dimen/button_size"
-            android:layout_centerInParent="true"
-            android:contentDescription="@null"
-            android:visibility="invisible"
-            app:srcCompat="@drawable/button_left" />
+        <RelativeLayout
+            android:layout_width="240dp"
+            android:layout_height="120dp"
+            android:layout_gravity="center_horizontal">
 
-        <!-- ボタン（上） -->
-        <ImageView
-            android:id="@+id/top_button"
-            android:layout_width="@dimen/button_size"
-            android:layout_height="@dimen/button_size"
-            android:layout_above="@id/center_button"
-            android:layout_centerHorizontal="true"
-            android:contentDescription="@null"
-            app:srcCompat="@drawable/button_top_selector" />
+            <!-- リセットボタン -->
+            <ImageView
+                android:id="@+id/reset_button"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:contentDescription="@null"
+                app:srcCompat="@drawable/button_reset" />
 
-        <!-- ボタン（左） -->
-        <ImageView
-            android:id="@+id/left_button"
-            android:layout_width="@dimen/button_size"
-            android:layout_height="@dimen/button_size"
-            android:layout_centerVertical="true"
-            android:layout_toLeftOf="@id/center_button"
-            android:contentDescription="@null"
-            app:srcCompat="@drawable/button_left_selector" />
+            <RelativeLayout
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true">
 
-        <!-- ボタン（右） -->
-        <ImageView
-            android:id="@+id/right_button"
-            android:layout_width="@dimen/button_size"
-            android:layout_height="@dimen/button_size"
-            android:layout_centerVertical="true"
-            android:layout_toRightOf="@id/center_button"
-            android:contentDescription="@null"
-            app:srcCompat="@drawable/button_right_selector" />
+                <!-- ボタン中央 -->
+                <ImageView
+                    android:id="@+id/center_button"
+                    android:layout_width="@dimen/button_size"
+                    android:layout_height="@dimen/button_size"
+                    android:layout_centerInParent="true"
+                    android:contentDescription="@null"
+                    android:visibility="invisible"
+                    app:srcCompat="@drawable/button_left" />
 
-        <!-- ボタン（下） -->
-        <ImageView
-            android:id="@+id/bottom_button"
-            android:layout_width="@dimen/button_size"
-            android:layout_height="@dimen/button_size"
-            android:layout_below="@id/center_button"
-            android:layout_centerHorizontal="true"
-            android:contentDescription="@null"
-            app:srcCompat="@drawable/button_bottom_selector" />
+                <!-- ボタン（上） -->
+                <ImageView
+                    android:id="@+id/top_button"
+                    android:layout_width="@dimen/button_size"
+                    android:layout_height="@dimen/button_size"
+                    android:layout_above="@id/center_button"
+                    android:layout_centerHorizontal="true"
+                    android:contentDescription="@null"
+                    app:srcCompat="@drawable/selector_button_top" />
 
-    </RelativeLayout>
+                <!-- ボタン（左） -->
+                <ImageView
+                    android:id="@+id/left_button"
+                    android:layout_width="@dimen/button_size"
+                    android:layout_height="@dimen/button_size"
+                    android:layout_centerVertical="true"
+                    android:layout_toLeftOf="@id/center_button"
+                    android:contentDescription="@null"
+                    app:srcCompat="@drawable/selector_button_left" />
+
+                <!-- ボタン（右） -->
+                <ImageView
+                    android:id="@+id/right_button"
+                    android:layout_width="@dimen/button_size"
+                    android:layout_height="@dimen/button_size"
+                    android:layout_centerVertical="true"
+                    android:layout_toRightOf="@id/center_button"
+                    android:contentDescription="@null"
+                    app:srcCompat="@drawable/selector_button_right" />
+
+                <!-- ボタン（下） -->
+                <ImageView
+                    android:id="@+id/bottom_button"
+                    android:layout_width="@dimen/button_size"
+                    android:layout_height="@dimen/button_size"
+                    android:layout_below="@id/center_button"
+                    android:layout_centerHorizontal="true"
+                    android:contentDescription="@null"
+                    app:srcCompat="@drawable/selector_button_bottom" />
+
+            </RelativeLayout>
+
+        </RelativeLayout>
+
+    </LinearLayout>
 
 </LinearLayout>

@@ -1,4 +1,4 @@
-package com.websarva.wings.android.towerwalk.Item;
+package com.websarva.wings.android.towerwalk.item;
 
 public class CharacterIcon extends GameObject {
 

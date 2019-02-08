@@ -1,4 +1,4 @@
-package com.websarva.wings.android.towerwalk.Const;
+package com.websarva.wings.android.towerwalk.consts;
 
 public class KeyMapConst {
 

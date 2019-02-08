@@ -1,6 +1,18 @@
 <resources>
     <string name="app_name">TowerWalk</string>
-
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <!-- GameResultFragment -->
+    <string name="fragment_game_result_title">対戦記録</string>
+    <!-- GameResultDetailFragment -->
+    <string name="fragment_game_result_detail_title">対戦記録詳細</string>
+
+    <!-- TowerWalkBoardView -->
+    <string name="tower_walk_board_view_game_result_draw">Draw</string>
+    <string name="tower_walk_board_view_game_result_win">You Win</string>
+    <string name="tower_walk_board_view_game_result_lose">You Lose</string>
+    <string name="tower_walk_board_view_game_result_error">Error</string>
+
+
 </resources>
